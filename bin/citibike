@@ -1,0 +1,48 @@
+#!/usr/bin/env ruby
+
+require "yaml"
+
+require "citibike"
+require "highline/import"
+require "optimist"
+
+SECS_PER_MIN = 60
+MINS_PER_HOUR = 60
+
+# Formats time_in_secs to human friendly format, e.g. 3 hrs 25 mins.
+# @param time_in_secs (Integer), e.g. 300
+def human_format_time(time_in_secs)
+  time_in_hours = time_in_secs / (SECS_PER_MIN * MINS_PER_HOUR)
+  time_in_mins = (time_in_secs / SECS_PER_MIN) % MINS_PER_HOUR
+  "#{time_in_hours.to_i} hrs #{time_in_mins.to_i} mins"
+end
+
+# Get command line options.
+opts = Optimist.options do
+  banner "Download Citi Bike trip data"
+  opt :n, "Number of pages to process", type: :int
+end
+
+# Prepare login information. Try command line options and fall back on STDIN.
+login_info = YAML.load_file("config.yml")
+username = login_info["username"]
+password = login_info["password"]
+unless username && password
+  username = ask("Citi Bike username: ")
+  password = ask("Citi Bike password: ") { |q| q.echo = "*" }
+end
+
+user = CitiBike::User.new(username, password)
+user.download_trips(opts[:n])
+
+time_in_mins = user.total_time / SECS_PER_MIN
+time_str = human_format_time(user.total_time)
+printf("Total time:\t\t%d minutes (%s)\n", time_in_mins, time_str)
+printf("Total cost (approx): $%d\n", user.total_cost_approx)
+printf("Cost per minute:\t$%.2f\n", user.effective_cost_per_minute)
+printf("Cost per trip:\t\t$%.2f\n", user.effective_cost_per_trip)
+
+puts CitiBike::BikeTrip.csv_header
+user.bike_trips.each do |trip|
+  puts trip.to_csv
+end
