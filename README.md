@@ -6,12 +6,12 @@ started instructions, create your own scripts!
 ## Getting Started
 
 ```sh
-$ bundle install
-# Edit Citi Bike username and password in config.yml
+$ bundle install --binstubs=binstubs
+$ # Edit Citi Bike username and password in config.yml
 $ cp config.yml.example config.yml
 $ vim config.yml
-# Run basic stats reporter on your first trip page
-$ ruby -Ilib ./bin/citibike -n 1
+$ # Run basic stats reporter on your first trip page
+$ binstubs/citibike -n 1
 Total time:             182 minutes (3 hrs 2 mins)
 Cost per minute:        $0.52
 Cost per trip:          $9.50

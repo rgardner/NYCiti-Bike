@@ -3,6 +3,7 @@
 .ruby-gemset
 .ruby-version
 Gemfile.lock
+binstubs
 pkg
 
 # Citi Bike
