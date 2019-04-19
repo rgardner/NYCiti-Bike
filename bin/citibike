@@ -37,10 +37,10 @@ user.download_trips(opts[:n])
 
 time_in_mins = user.total_time / SECS_PER_MIN
 time_str = human_format_time(user.total_time)
-printf("Total time:\t\t%d minutes (%s)\n", time_in_mins, time_str)
-printf("Total cost (approx): $%d\n", user.total_cost_approx)
-printf("Cost per minute:\t$%.2f\n", user.effective_cost_per_minute)
-printf("Cost per trip:\t\t$%.2f\n", user.effective_cost_per_trip)
+puts "Total time:\t\t#{time_in_mins} minutes (#{time_str})"
+puts "Total cost (approx):\t$#{user.total_cost_approx}"
+puts format("Cost per minute:\t$%.2f", user.effective_cost_per_minute)
+puts format("Cost per trip:\t\t$%.2f\n", user.effective_cost_per_trip)
 
 puts CitiBike::BikeTrip.csv_header
 user.bike_trips.each do |trip|
